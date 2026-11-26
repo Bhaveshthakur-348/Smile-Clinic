@@ -44,6 +44,10 @@ export async function setBookingStatus(form: FormData) {
   }
   if (b && status === "completed") await markVisit(clinic.id, b.patientId);
   if (b && status === "cancelled") await notifyBookingChanged(b.id, "cancelled");
+  if (str(form, "returnView") === "upcoming") {
+    const label = { completed: "Marked done", no_show: "Marked no-show", cancelled: "Booking cancelled", confirmed: "Booking restored" }[status];
+    return back("/admin/bookings", { view: "upcoming", ok: label });
+  }
   back("/admin/bookings", { date: str(form, "returnDate") || b?.date || "" });
 }
 
